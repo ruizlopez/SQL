@@ -1,0 +1,42 @@
+-- QUERY #1 
+-- Get an overview of the data. Instead of looking at the entire table, 10 rows will do. 
+SELECT * FROM CityBikeLanes LIMIT 10;
+
+-- QUERY #2 
+-- Run this SQL and make note of what you see. Why are there two rows in the results? 
+SELECT * FROM CityBikeLanes WHERE street='Walnut';
+
+-- Let's say you work as a data analyst for your city, and your boss wants a list of all the bike lanes that have an average safety rating of 4.0 or higher. She also wants to see the average safety rating for each of those bike lanes, and a label that says "Safe Lane".
+WITH safety_average_cte AS (
+SELECT street, AVG(safetyrating) as 'rating'
+FROM citybikelanes
+GROUP BY street)
+
+SELECT street, rating,
+'Safe Lane' AS tag
+FROM safety_average_cte
+WHERE rating>=4
+
+--OVER designates the function as a window function.
+PARTITION BY is a clause you can use in a window function. It divides the results into partitions, and performs the window function on each set of partitioned data.
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as "Average_safety_rating"
+FROM CityBikeLanes
+
+SELECT street, safetyrating, AVG(safetyrating)
+FROM CityBikeLanes
+WHERE street='2nd'
+GROUP BY street, safetyrating
+
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as "Average_safety_rating"
+FROM CityBikeLanes
+WHERE street='2nd'
+
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as 'average safety rating',
+CASE WHEN AVG(safetyrating) OVER (PARTITION BY street) >=4 THEN 'Leave As-Is'
+    WHEN AVG(safetyrating) OVER (PARTITION BY street) >2.5 THEN 'Remove'
+    ELSE 'Improvements Needed'
+    END AS 'Recmmendation'
+FROM CityBikeLanes;
