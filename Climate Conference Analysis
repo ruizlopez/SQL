@@ -121,6 +121,7 @@ INSERT INTO hotels VALUES
  , (2, 'Marriott', '1240 Marshall Avenue, Cityville, PA')
  , (3, 'Four Season''s', '900 Winter Road, Cityville, PA');
 
+Data Analysis
 SELECT * FROM vips LIMIT 5;
 
 -- 1. [LEFT JOIN] -- List all the VIPs (last and first name) and any panels they are presenting at.
@@ -139,6 +140,7 @@ reservations.dinner_rsvp
 FROM vips
 INNER JOIN reservations
 ON vips.member_id=reservations.member_id;
+
 -- 3. [Multiples JOINs]--List all VIPs with a hotel reservation & hotel names
 SELECT vips.last_name,
 vips.first_name,
@@ -169,7 +171,7 @@ SELECT v1.first_name AS feedback_giver, v1.last_name AS giver_last,
 FROM vips v1
 JOIN vips v2 ON v1.provides_feedback_to = v2.member_id;
 
--- 6. [up to me!]--Get a list of all government-affiliated VIPs who have RSVP’d for dinner.
+-- 6.--Get a list of all government-affiliated VIPs who have RSVP’d for dinner.
 SELECT v.first_name, v.last_name, v.association
 FROM vips v
 JOIN reservations r ON v.member_id = r.member_id
