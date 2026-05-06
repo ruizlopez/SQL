@@ -1,4 +1,4 @@
-#In this SQL, I'm querying a database with multiple tables in it to quantify statistics to a variety of questions. 
+#In this SQL, I'm querying a database called chinook with multiple tables in it to quantify statistics to a variety of questions. 
 
 SELECT* FROM customers LIMIT 20;
 
