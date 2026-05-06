@@ -1,0 +1,40 @@
+#In this SQL, I'm querying a database called patient with the tables county_population & ed_visits in it to quantify statistics to a variety of questions. 
+
+Analysis: 
+-- Viewing data & checking for missing values in specific rows
+SELECT * FROM ed_visits LIMIT 15;
+SELECT * FROM county_population LIMIT 15;
+SELECT * 
+FROM ed_visits 
+WHERE visit_date IS NULL OR diagnosis_code IS NULL; 
+-- 1. How many opioid-related ED visits occurred each year? 
+SELECT YEAR(visit_date) AS year, COUNT(*) AS total_visits 
+FROM ed_visits 
+WHERE diagnosis_code LIKE 'T40%' 
+GROUP BY year
+ORDER BY year; 
+-- 2. Which counties have the highest overdose visit rates per 100,000 people? 
+SELECT e.county, COUNT(*) * 100000.0 / p.population AS rate_per_100k 
+FROM ed_visits e 
+JOIN county_population p 
+ON e.county = p.county AND year(e.visit_date) = p.year 
+WHERE e.diagnosis_code LIKE 'T40%' 
+GROUP BY e.county, p.population 
+ORDER BY rate_per_100k DESC; 
+-- 3. Are overdoses more common among men or women? 
+SELECT sex, COUNT(*) AS total_visits 
+FROM ed_visits 
+WHERE diagnosis_code LIKE 'T40%' 
+GROUP BY sex; 
+-- 4. What age groups show the highest number of opioid-related ED visits? 
+SELECT age, COUNT(*) AS total_visits 
+FROM ed_visits 
+WHERE diagnosis_code LIKE 'T40%' 
+GROUP BY age; 
+-- 5. How many patients had multiple opioid-related ED visits?
+SELECT patient_id, COUNT(*) AS num_visits 
+FROM ed_visits 
+WHERE diagnosis_code LIKE 'T40%' 
+GROUP BY patient_id 
+HAVING COUNT(*) > 1 
+ORDER BY num_visits DESC;
